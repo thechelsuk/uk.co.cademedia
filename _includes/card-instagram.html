@@ -1,0 +1,4 @@
+{%- assign p = include.item -%}
+<a class="card" href="{{ p.url | relative_url }}" title="{{ p.title | strip_html | truncate: 120 | escape }}">
+  <div class="card-media card-media--square"><img src="{% if p.thumbnail contains '://' %}{{ p.thumbnail }}{% else %}{{ p.thumbnail | relative_url }}{% endif %}" alt="{{ p.title | strip_html | truncate: 120 | escape }}" loading="lazy"></div>
+</a>

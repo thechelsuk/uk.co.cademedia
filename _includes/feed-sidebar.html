@@ -1,0 +1,56 @@
+{%- assign counts = site.feed_counts -%}
+{%- assign latest_ep = site.podcasts | last -%}
+<aside class="sidebar" aria-label="About the feed">
+  <section class="side-card side-card--brand">
+    <img src="{{ site.logo | relative_url }}" alt="CADE" width="1619" height="478">
+    <p>{{ site.description }}</p>
+    {% include social-links.html class="social--small" %}
+  </section>
+
+  <section class="side-card">
+    <h2>Sources {% if page.filter and page.filter != 'all' %}<a class="side-clear" href="{{ '/feed/' | relative_url }}">Clear</a>{% endif %}</h2>
+    <ul class="side-sources">
+      <li><a href="{{ '/feed/' | relative_url }}"{% if page.filter == 'all' %} aria-current="page"{% endif %}>
+        <span class="side-icon src--all">{% include icon.html name="note" %}</span>
+        <span>All</span>
+        <span class="side-count">{{ counts.all }}</span>
+      </a></li>
+      {%- for f in site.feed_pages.filters %}
+      {%- assign n = counts[f.key] | default: 0 %}{% if n == 0 %}{% continue %}{% endif %}
+      <li><a href="{{ '/feed/' | append: f.key | append: '/' | relative_url }}"{% if page.filter == f.key %} aria-current="page"{% endif %}>
+        {%- capture src_key %}{% case f.key %}{% when 'video' %}youtube{% when 'clip' %}tiktok{% when 'post' %}updates{% else %}{{ f.key }}{% endcase %}{% endcapture %}
+        <span class="side-icon src--{{ src_key | strip }}">{% include icon.html name=f.icon %}</span>
+        <span>{{ f.label }}</span>
+        <span class="side-count">{{ n }}</span>
+      </a></li>
+      {%- endfor %}
+    </ul>
+  </section>
+
+  {%- if latest_ep %}
+  <section class="side-card">
+    <h2>Latest episode</h2>
+    <a class="side-ep" href="{{ latest_ep.url | relative_url }}">{{ latest_ep.title }}</a>
+    <p class="side-meta">{{ latest_ep.date | date: '%-d %B %Y' }}{% if latest_ep.duration %} · {{ latest_ep.duration }}{% endif %}</p>
+    {% if latest_ep.audio %}<audio controls preload="none" src="{{ latest_ep.audio }}"></audio>{% endif %}
+  </section>
+  {%- endif %}
+
+  <section class="side-card side-card--support">
+    <h2>Support CADE</h2>
+    <p>Bonus content, early videos and the CADE Club.</p>
+    <div class="btn-row">
+      <a class="btn btn--sm" href="https://www.patreon.com/cademedia" rel="noopener" target="_blank">{% include icon.html name="patreon" %} Patreon</a>
+      <a class="btn btn--sm btn--ghost" href="https://cade-media-shop.fourthwall.com/en-gbp" rel="noopener" target="_blank">Merch</a>
+    </div>
+  </section>
+
+  <section class="side-card">
+    <h2>Subscribe</h2>
+    <ul class="side-links">
+      <li><a href="{{ '/feed/all.xml' | relative_url }}">{% include icon.html name="rss" %} Everything (RSS)</a></li>
+      <li><a href="https://www.youtube.com/@{{ site.sources.youtube_handle }}?sub_confirmation=1" rel="noopener" target="_blank">{% include icon.html name="youtube" %} Subscribe on YouTube</a></li>
+      <li><a href="{{ site.sources.podcast_feed }}">{% include icon.html name="podcast" %} Podcast feed</a></li>
+    </ul>
+  </section>
+</aside>

@@ -1,0 +1,2 @@
+{%- assign s = include.seconds | plus: 0 -%}{%- assign h = s | divided_by: 3600 -%}{%- assign m = s | modulo: 3600 | divided_by: 60 -%}{%- assign sec = s | modulo: 60 -%}
+{%- if h > 0 %}{{ h }}:{% if m < 10 %}0{% endif %}{% endif %}{{ m }}:{% if sec < 10 %}0{% endif %}{{ sec }}

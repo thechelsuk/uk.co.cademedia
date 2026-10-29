@@ -1,0 +1,8 @@
+{%- assign p = include.pager -%}
+{%- if p.total_pages > 1 %}
+<nav class="pager" aria-label="Pages">
+  {% if p.prev_url %}<a class="btn btn--ghost" href="{{ p.prev_url | relative_url }}" rel="prev">← Newer</a>{% else %}<span></span>{% endif %}
+  <span class="pager-count">Page {{ p.page }} of {{ p.total_pages }}</span>
+  {% if p.next_url %}<a class="btn btn--ghost" href="{{ p.next_url | relative_url }}" rel="next">Older →</a>{% else %}<span></span>{% endif %}
+</nav>
+{%- endif %}

@@ -1,0 +1,13 @@
+---
+layout: default
+---
+<section class="page-hero">
+  <div class="wrap">
+    {% if page.kicker %}<p class="kicker">{{ page.kicker }}</p>{% endif %}
+    <h1>{{ page.title }}</h1>
+    {% if page.intro %}<p class="lede">{{ page.intro }}</p>{% endif %}
+  </div>
+</section>
+<div class="wrap page-body prose">
+{{ content }}
+</div>

@@ -1,0 +1,40 @@
+{%- assign it = include.item -%}
+{%- assign src = site.data.sources[it.source] | default: site.data.sources.updates -%}
+{%- assign tall = false -%}{%- if it.collection == 'tiktoks' or it.short %}{% assign tall = true %}{% endif -%}
+{%- assign img = it.thumbnail | default: it.image -%}
+{%- if it.collection == 'posts' %}{% assign summary = it.description | default: it.excerpt | strip_html | strip | truncate: 220 %}{% else %}{% assign summary = it.description | default: '' %}{% endif -%}
+<article class="post-item" data-type="{{ it.type }}">
+  {% include source-avatar.html source=it.source %}
+  <div class="post-main">
+    <header class="post-head">
+      <strong>{{ src.name }}</strong>
+      <span class="post-handle">{{ src.handle }}</span>
+      <span class="post-dot" aria-hidden="true">·</span>
+      <a class="post-time" href="{{ it.url | relative_url }}"><time datetime="{{ it.date | date_to_xmlschema }}" title="{{ it.date | date: '%-d %B %Y, %H:%M' }}">{{ it.date | date: '%-d %b' }}{% assign y = it.date | date: '%Y' %}{% assign now_y = site.time | date: '%Y' %}{% if y != now_y %} {{ y }}{% endif %}</time></a>
+    </header>
+    {%- if it.note %}
+    {%- assign plain = it.content | strip_html | strip %}
+    <div class="post-text post-text--note">{% if plain.size > 500 %}<p>{{ plain | truncate: 500 }}</p>{% else %}{{ it.content }}{% endif %}</div>
+    {%- elsif it.collection == 'instagram' or it.collection == 'tiktoks' %}
+    <p class="post-text">{{ it.content | strip_html | strip | truncate: 280 }}</p>
+    {%- else %}
+    <h3 class="post-title"><a href="{{ it.url | relative_url }}">{{ it.title }}</a></h3>
+    {%- if summary != '' and it.collection != 'videos' %}<p class="post-text">{{ summary }}</p>{% endif %}
+    {%- endif %}
+    {%- if img %}
+    <a class="post-media{% if tall %} post-media--tall{% elsif it.collection == 'instagram' %} post-media--square{% elsif it.collection == 'posts' %} post-media--natural{% endif %}" href="{{ it.url | relative_url }}" tabindex="-1" aria-hidden="true">
+      <img src="{% if img contains '://' %}{{ img }}{% else %}{{ img | relative_url }}{% endif %}" alt="" loading="lazy">
+      {% if it.collection == 'videos' or it.collection == 'tiktoks' %}<span class="card-play">{% include icon.html name="play" %}</span>{% endif %}
+    </a>
+    {%- endif %}
+    {%- if it.audio %}
+    <audio class="post-audio" controls preload="none" src="{{ it.audio }}"></audio>
+    {%- endif %}
+    <footer class="post-actions">
+      <span class="badge badge--{{ it.type }}">{{ it.type_label }}{% if it.short %} Short{% endif %}</span>
+      {% if it.duration %}<span>{{ it.duration }}</span>{% elsif it.views %}<span>{% if it.views >= 1000 %}{{ it.views | divided_by: 1000 }}k{% else %}{{ it.views }}{% endif %} views</span>{% endif %}
+      {% if it.chapters %}<span>{{ it.chapters.size }} chapters</span>{% endif %}
+      <a class="post-open" href="{{ it.url | relative_url }}">Open {% include icon.html name="arrow" %}</a>
+    </footer>
+  </div>
+</article>

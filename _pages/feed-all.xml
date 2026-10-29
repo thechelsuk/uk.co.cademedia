@@ -1,0 +1,37 @@
+---
+permalink: /feed/all.xml
+layout: null
+sitemap: false
+---
+{% include feed-items.liquid -%}
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
+<channel>
+  <title>{{ site.title | xml_escape }} — everything</title>
+  <link>{{ '/feed/' | absolute_url }}</link>
+  <atom:link href="{{ page.url | absolute_url }}" rel="self" type="application/rss+xml"/>
+  <description>Every video, podcast episode, clip, Instagram post and update from CADE Media.</description>
+  <language>en-gb</language>
+  <lastBuildDate>{{ site.time | date_to_rfc822 }}</lastBuildDate>
+  {%- for it in feed_items limit: 100 %}
+  {%- assign href = it.url | absolute_url %}
+  {%- assign img = it.thumbnail | default: it.image %}
+  <item>
+    <title>[{{ it.type_label }}] {{ it.title | xml_escape }}</title>
+    <link>{{ href | xml_escape }}</link>
+    <guid isPermaLink="false">{{ it.type }}:{{ it.source_id | default: it.url | xml_escape }}</guid>
+    <pubDate>{{ it.date | date_to_rfc822 }}</pubDate>
+    {%- for c in it.categories %}
+    <category>{{ c | xml_escape }}</category>
+    {%- endfor %}
+    <description>{% if img %}{% capture src %}{% if img contains '://' %}{{ img }}{% else %}{{ img | absolute_url }}{% endif %}{% endcapture %}&lt;p&gt;&lt;img src="{{ src | xml_escape }}" alt=""&gt;&lt;/p&gt;{% endif %}{{ it.content | markdownify | xml_escape }}</description>
+    {%- if img %}
+    <media:thumbnail url="{% if img contains '://' %}{{ img | xml_escape }}{% else %}{{ img | absolute_url }}{% endif %}"/>
+    {%- endif %}
+    {%- if it.audio %}
+    <enclosure url="{{ it.audio | xml_escape }}" type="audio/mpeg" length="0"/>
+    {%- endif %}
+  </item>
+  {%- endfor %}
+</channel>
+</rss>

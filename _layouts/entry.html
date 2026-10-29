@@ -1,0 +1,76 @@
+---
+layout: default
+---
+{%- assign it = page -%}
+{%- assign src = site.data.sources[it.source] | default: site.data.sources.updates -%}
+{%- assign tall = false -%}{%- if it.collection == 'tiktoks' or it.short %}{% assign tall = true %}{% endif -%}
+{%- capture back_url -%}{% case it.collection %}{% when 'podcasts' %}/wild-ones-podcast/{% when 'tiktoks' %}/cade-clips/{% when 'instagram' %}/feed/instagram/{% when 'posts' %}/feed/post/{% else %}{% if it.channel == 'clips' %}/cade-clips/{% else %}/video/{% endif %}{% endcase %}{%- endcapture -%}
+<div class="wrap with-sidebar entry-wrap">
+  <article class="entry with-sidebar-main" data-entry>
+    <a class="entry-back" href="{{ back_url | relative_url }}">← {% case it.collection %}{% when 'podcasts' %}All episodes{% when 'tiktoks' %}All clips{% when 'instagram' %}Instagram{% when 'posts' %}All updates{% else %}{% if it.channel == 'clips' %}All clips{% else %}All videos{% endif %}{% endcase %}</a>
+
+    <header class="entry-head">
+      {% include source-avatar.html source=it.source variant="lg" %}
+      <div>
+        <p class="entry-source"><strong>{{ src.name }}</strong> <span>{{ src.handle }}</span></p>
+        <p class="entry-meta"><span class="badge badge--{{ it.type }}">{{ it.type_label }}{% if it.short %} Short{% endif %}</span>
+          <time datetime="{{ it.date | date_to_xmlschema }}">{{ it.date | date: '%-d %B %Y' }}</time>
+          {% if it.duration %}· {{ it.duration }}{% endif %}
+          {% if it.views %}· {{ it.views }} views{% endif %}</p>
+      </div>
+    </header>
+
+    {% if it.collection == 'instagram' or it.collection == 'tiktoks' or it.note %}<h1 class="visually-hidden">{{ it.title }}</h1>{% else %}<h1 class="entry-title">{{ it.title }}</h1>{% endif %}
+
+    {%- if it.collection == 'videos' %}
+    <div class="player{% if tall %} player--tall{% endif %}">
+      <iframe data-player="youtube" src="https://www.youtube-nocookie.com/embed/{{ it.source_id }}?rel=0" title="{{ it.title | escape }}" loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    {%- elsif it.collection == 'tiktoks' %}
+    <div class="player player--tall">
+      <iframe src="https://www.tiktok.com/player/v1/{{ it.source_id }}?rel=0&description=0" title="TikTok video" loading="lazy" allow="fullscreen; encrypted-media" allowfullscreen></iframe>
+    </div>
+    {%- elsif it.collection == 'instagram' %}
+    <a class="entry-image" href="{{ it.link }}" rel="noopener" target="_blank"><img src="{{ it.thumbnail | relative_url }}" alt="{{ it.title | escape }}"></a>
+    {%- elsif it.collection == 'posts' and it.image %}
+    <img class="entry-image-inline" src="{% if it.image contains '://' %}{{ it.image }}{% else %}{{ it.image | relative_url }}{% endif %}" alt="">
+    {%- elsif it.collection == 'podcasts' %}
+    <div class="episode-player">
+      {% if it.image %}<img src="{{ it.image }}" alt="" width="120" height="120" loading="lazy">{% else %}<span class="episode-art">{% include icon.html name="podcast" %}</span>{% endif %}
+      <audio data-player="audio" controls preload="metadata" src="{{ it.audio }}"></audio>
+    </div>
+    {%- endif %}
+
+    {%- if it.chapters %}
+    <section class="chapters">
+      <h2>Chapters</h2>
+      <ol>
+        {%- for c in it.chapters %}
+        <li><button type="button" data-seek="{{ c.seconds }}"><span class="chapter-time">{% include chapter-time.html seconds=c.seconds %}</span> <span>{{ c.title }}</span></button></li>
+        {%- endfor %}
+      </ol>
+    </section>
+    {%- endif %}
+
+    {%- assign body = content | strip -%}
+    {% if body != '' %}
+    <section class="entry-body prose{% if it.note %} entry-body--note{% endif %}">
+      {% if it.collection == 'videos' or it.collection == 'podcasts' %}<h2>Description</h2>{% endif %}
+      {{ content }}
+    </section>
+    {% endif %}
+
+    <p class="entry-actions">
+      {% if it.link %}<a class="btn" href="{{ it.link }}" rel="noopener" target="_blank">{% include icon.html name=src.icon %} {{ src.action }}</a>{% endif %}
+      {% if it.collection == 'podcasts' %}<a class="btn" href="{{ src.url }}" rel="noopener" target="_blank">{% include icon.html name="podcast" %} {{ src.action }}</a>{% endif %}
+      <a class="btn btn--ghost" href="{{ '/feed/' | append: it.type | append: '/' | relative_url }}">More {{ it.type_label }}</a>
+    </p>
+
+    <nav class="entry-nav" aria-label="More">
+      {% if it.next %}<a href="{{ it.next.url | relative_url }}"><span>← Newer</span>{{ it.next.title | truncate: 80 }}</a>{% else %}<span></span>{% endif %}
+      {% if it.previous %}<a class="entry-nav-older" href="{{ it.previous.url | relative_url }}"><span>Older →</span>{{ it.previous.title | truncate: 80 }}</a>{% endif %}
+    </nav>
+  </article>
+  {% include feed-sidebar.html %}
+</div>

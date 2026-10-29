@@ -1,0 +1,139 @@
+{%- comment -%}
+  schema.org JSON-LD as one @graph: the organisation, the website, the
+  page's main item (VideoObject, PodcastEpisode, SocialMediaPosting…) and a
+  breadcrumb trail. Every string goes through jsonify so the JSON stays valid.
+{%- endcomment -%}
+{%- assign org_id = '/#organization' | absolute_url -%}
+{%- assign site_id = '/#website' | absolute_url -%}
+{%- assign page_id = include.canonical | append: '#main' -%}
+{%- capture same_as -%}[{% for s in site.data.social %}{{ s.url | jsonify }}{% unless forloop.last %},{% endunless %}{% endfor %},"https://wearethewildones.com/"]{%- endcapture -%}
+{%- capture publisher -%}{"@id": {{ org_id | jsonify }}}{%- endcapture -%}
+{%- assign plain = page.content | strip_html | strip_newlines | normalize_whitespace | strip | truncate: 500 -%}
+
+{%- comment -%} Breadcrumb section by collection {%- endcomment -%}
+{%- case page.collection -%}
+  {%- when 'videos' -%}{% if page.channel == 'clips' %}{% assign crumb_name = 'Clips' %}{% assign crumb_url = '/cade-clips/' %}{% else %}{% assign crumb_name = 'Video' %}{% assign crumb_url = '/video/' %}{% endif %}
+  {%- when 'podcasts' -%}{% assign crumb_name = 'The Wild Ones Podcast' %}{% assign crumb_url = '/wild-ones-podcast/' %}
+  {%- when 'tiktoks' -%}{% assign crumb_name = 'Clips' %}{% assign crumb_url = '/cade-clips/' %}
+  {%- when 'instagram' -%}{% assign crumb_name = 'Instagram' %}{% assign crumb_url = '/feed/instagram/' %}
+  {%- when 'posts' -%}{% assign crumb_name = 'The Feed' %}{% assign crumb_url = '/feed/' %}
+  {%- else -%}{% assign crumb_name = nil %}
+{%- endcase -%}
+
+{%- capture main -%}
+{%- if page.collection == 'videos' -%}
+  {
+    "@type": "VideoObject",
+    "@id": {{ page_id | jsonify }},
+    "name": {{ page.title | jsonify }},
+    "description": {{ include.description | jsonify }},
+    "thumbnailUrl": [{{ include.image | jsonify }}, {{ page.thumbnail | jsonify }}],
+    "uploadDate": {{ page.date | date_to_xmlschema | jsonify }},
+    "embedUrl": {{ 'https://www.youtube.com/embed/' | append: page.source_id | jsonify }},
+    "url": {{ include.canonical | jsonify }},
+    "sameAs": {{ page.link | jsonify }},
+    "publisher": {{ publisher }},
+    "isPartOf": {"@id": {{ site_id | jsonify }}}
+    {%- if page.views %},
+    "interactionStatistic": {"@type": "InteractionCounter", "interactionType": {"@type": "WatchAction"}, "userInteractionCount": {{ page.views }}}
+    {%- endif %}
+    {%- if page.chapters %},
+    "hasPart": [
+      {%- for c in page.chapters %}
+      {%- assign next_c = page.chapters[forloop.index] %}
+      {"@type": "Clip", "name": {{ c.title | jsonify }}, "startOffset": {{ c.seconds }}{% if next_c %}, "endOffset": {{ next_c.seconds }}{% endif %}, "url": {{ page.link | append: '&t=' | append: c.seconds | jsonify }}}{% unless forloop.last %},{% endunless %}
+      {%- endfor %}
+    ]
+    {%- endif %}
+  }
+{%- elsif page.collection == 'podcasts' -%}
+  {
+    "@type": "PodcastEpisode",
+    "@id": {{ page_id | jsonify }},
+    "url": {{ include.canonical | jsonify }},
+    "name": {{ page.title | jsonify }},
+    "description": {{ include.description | jsonify }},
+    "datePublished": {{ page.date | date_to_xmlschema | jsonify }},
+    {%- if page.episode %}"episodeNumber": {{ page.episode }},{% endif %}
+    "image": {{ include.image | jsonify }},
+    "associatedMedia": {"@type": "MediaObject", "contentUrl": {{ page.audio | jsonify }}},
+    "partOfSeries": {"@type": "PodcastSeries", "name": "The Wild Ones", "url": {{ '/wild-ones-podcast/' | absolute_url | jsonify }}, "webFeed": {{ site.sources.podcast_feed | jsonify }}},
+    "publisher": {{ publisher }}
+  }
+{%- elsif page.collection == 'tiktoks' or page.collection == 'instagram' or page.via -%}
+  {
+    "@type": "SocialMediaPosting",
+    "@id": {{ page_id | jsonify }},
+    "url": {{ include.canonical | jsonify }},
+    "headline": {{ page.title | jsonify }},
+    "articleBody": {{ plain | jsonify }},
+    "datePublished": {{ page.date | date_to_xmlschema | jsonify }},
+    "image": {{ include.image | jsonify }},
+    "sameAs": {{ page.link | jsonify }},
+    "author": {{ publisher }},
+    "publisher": {{ publisher }}
+  }
+{%- elsif page.collection == 'posts' -%}
+  {
+    "@type": "BlogPosting",
+    "@id": {{ page_id | jsonify }},
+    "url": {{ include.canonical | jsonify }},
+    "headline": {{ page.title | jsonify }},
+    "description": {{ include.description | jsonify }},
+    "datePublished": {{ page.date | date_to_xmlschema | jsonify }},
+    "image": {{ include.image | jsonify }},
+    "author": {{ publisher }},
+    "publisher": {{ publisher }}
+  }
+{%- else -%}
+  {
+    "@type": {% if page.pager %}"CollectionPage"{% elsif page.url == '/contact-us/' %}"ContactPage"{% elsif page.url == '/' %}"WebPage"{% else %}"WebPage"{% endif %},
+    "@id": {{ page_id | jsonify }},
+    "url": {{ include.canonical | jsonify }},
+    "name": {{ page.title | default: site.title | jsonify }},
+    "description": {{ include.description | jsonify }},
+    "isPartOf": {"@id": {{ site_id | jsonify }}},
+    "about": {{ publisher }}
+  }
+{%- endif -%}
+{%- endcapture -%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": {{ org_id | jsonify }},
+      "name": "CADE Media",
+      "url": {{ '/' | absolute_url | jsonify }},
+      "logo": {"@type": "ImageObject", "url": {{ '/assets/images/favicon.png' | absolute_url | jsonify }}},
+      "description": {{ site.description | strip | jsonify }},
+      "sameAs": {{ same_as }}
+    },
+    {
+      "@type": "WebSite",
+      "@id": {{ site_id | jsonify }},
+      "url": {{ '/' | absolute_url | jsonify }},
+      "name": "CADE Media",
+      "inLanguage": "en-GB",
+      "publisher": {{ publisher }}
+    },
+    {{ main }}
+    {%- if crumb_name or page.url != '/' %},
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": {{ '/' | absolute_url | jsonify }}}
+        {%- if crumb_name %},
+        {"@type": "ListItem", "position": 2, "name": {{ crumb_name | jsonify }}, "item": {{ crumb_url | absolute_url | jsonify }}},
+        {"@type": "ListItem", "position": 3, "name": {{ page.title | jsonify }}, "item": {{ include.canonical | jsonify }}}
+        {%- else %},
+        {"@type": "ListItem", "position": 2, "name": {{ page.title | default: site.title | jsonify }}, "item": {{ include.canonical | jsonify }}}
+        {%- endif %}
+      ]
+    }
+    {%- endif %}
+  ]
+}
+</script>

@@ -1,0 +1,37 @@
+{%- comment -%} SEO, Open Graph, Twitter and structured data. Values come from _plugins/seo_data.rb. {%- endcomment -%}
+{%- assign seo_title = page.seo_title | default: site.title -%}
+{%- assign seo_desc = page.seo_description | default: site.description | strip -%}
+{%- assign canonical = page.url | replace: 'index.html', '' | absolute_url -%}
+{%- assign img = page.seo_image | default: '/assets/images/og-default.jpg' -%}
+{%- unless img contains '://' %}{% assign img = img | absolute_url %}{% endunless -%}
+{%- assign is_home = false %}{% if page.url == '/' %}{% assign is_home = true %}{% endif -%}
+{%- capture og_type -%}{% if is_home %}website{% elsif page.collection == 'videos' %}video.other{% elsif page.collection %}article{% else %}website{% endif %}{%- endcapture -%}
+<title>{{ seo_title | escape }}</title>
+<meta name="description" content="{{ seo_desc | escape }}">
+<link rel="canonical" href="{{ canonical }}">
+{%- if page.seo_noindex or site.preview %}
+<meta name="robots" content="noindex, follow">
+{%- else %}
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+{%- endif %}
+{%- if page.pager.prev_url %}<link rel="prev" href="{{ page.pager.prev_url | absolute_url }}">{% endif %}
+{%- if page.pager.next_url %}<link rel="next" href="{{ page.pager.next_url | absolute_url }}">{% endif %}
+<meta property="og:site_name" content="{{ site.title }}">
+<meta property="og:locale" content="en_GB">
+<meta property="og:type" content="{{ og_type }}">
+<meta property="og:title" content="{{ page.title | default: site.title | escape }}">
+<meta property="og:description" content="{{ seo_desc | escape }}">
+<meta property="og:url" content="{{ canonical }}">
+<meta property="og:image" content="{{ img }}">
+<meta property="og:image:alt" content="{{ page.title | default: site.title | escape }}">
+{%- if page.collection == 'videos' %}
+<meta property="og:video" content="https://www.youtube.com/embed/{{ page.source_id }}">
+{%- endif %}
+{%- if page.collection and page.date %}
+<meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+{%- endif %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ page.title | default: site.title | escape }}">
+<meta name="twitter:description" content="{{ seo_desc | escape }}">
+<meta name="twitter:image" content="{{ img }}">
+{%- include structured-data.html canonical=canonical image=img description=seo_desc %}

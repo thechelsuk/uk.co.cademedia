@@ -1,0 +1,6 @@
+{%- assign v = include.item -%}
+<a class="card" href="{{ v.url | relative_url }}">
+  <div class="card-media"><img src="{% if v.thumbnail contains '://' %}{{ v.thumbnail }}{% else %}{{ v.thumbnail | relative_url }}{% endif %}" alt="" loading="lazy"><span class="card-play">{% include icon.html name="play" %}</span></div>
+  <h3>{{ v.title }}</h3>
+  <time datetime="{{ v.date | date_to_xmlschema }}">{{ v.date | date: '%-d %b %Y' }}</time>{% if v.views %}<span class="meta"> · {{ v.views }} views</span>{% endif %}
+</a>

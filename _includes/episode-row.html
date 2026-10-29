@@ -1,0 +1,6 @@
+{%- assign e = include.item -%}
+<li><a class="episode-row" href="{{ e.url | relative_url }}">
+  <span class="play">{% include icon.html name="play" %}</span>
+  <span><h3>{{ e.title }}</h3><span class="meta"><time datetime="{{ e.date | date_to_xmlschema }}">{{ e.date | date: '%-d %B %Y' }}</time></span></span>
+  {% if e.duration %}<span class="meta dur">{{ e.duration }}</span>{% endif %}
+</a></li>

@@ -1,0 +1,7 @@
+{%- assign t = include.item -%}
+{%- assign ic = include.icon | default: "tiktok" -%}
+<a class="card" href="{{ t.url | relative_url }}">
+  <div class="card-media card-media--tall"><img src="{% if t.thumbnail contains '://' %}{{ t.thumbnail }}{% else %}{{ t.thumbnail | relative_url }}{% endif %}" alt="" loading="lazy"><span class="card-play">{% include icon.html name=ic %}</span></div>
+  <h3>{{ t.title | truncate: 70 }}</h3>
+  <time datetime="{{ t.date | date_to_xmlschema }}">{{ t.date | date: '%-d %b %Y' }}</time>
+</a>

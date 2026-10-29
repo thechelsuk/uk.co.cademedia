@@ -1,0 +1,111 @@
+title: CADE Media
+tagline: Cycling culture for real people
+description: >-
+  CADE is one of the largest and fastest growing media channels on YouTube
+  dedicated to cycling culture for real people.
+url: "https://www.cademedia.co.uk"
+baseurl: ""
+lang: en-GB
+timezone: Europe/London
+logo: /assets/images/cade-logo.png
+
+author:
+  name: CADE Media
+
+# Used on the Privacy, Terms and Security pages and in security.txt
+legal:
+  email: website@cademedia.co.uk
+  updated: 2026-10-29
+
+# Feed sources used by the importers in _python/ (and shown on the site)
+sources:
+  youtube_channels:
+    - id: UCHyBWpfAggsFPDc5A7l_eWA     # @Cade_Media
+      name: main
+    - id: UCgwWEwDzyhBQXNkjClZ23DA     # Cade Media Clips
+      name: clips
+  youtube_handle: Cade_Media
+  podcast_feed: https://feeds.megaphone.fm/COMG1909627037
+  podcast_link: https://podfollow.com/the-wild-ones
+  tiktok_user: cade_media
+  instagram_user: cademediaofficial
+  # Written updates for the feed: any RSS/Atom feed the team posts to from an
+  # app (Tumblr, Bluesky, Mastodon, Micro.blog…). Imported by fetch_updates.py.
+  updates_feeds: []
+  #  - name: tumblr
+  #    url: https://cademedia.tumblr.com/rss
+
+collections:
+  videos:
+    output: true
+    permalink: /video/:title/
+    sort_by: date
+  podcasts:
+    output: true
+    permalink: /wild-ones-podcast/:title/
+    sort_by: date
+  tiktoks:
+    output: true
+    permalink: /clips/tiktok/:title/
+    sort_by: date
+  instagram:
+    output: true
+    permalink: /instagram/:title/
+    sort_by: date
+  # Sponsored posts: shown 3rd on every feed page while start <= today <= end
+  sponsors:
+    output: false
+
+permalink: /updates/:year/:month/:title/
+
+# Feed timeline (built by _plugins/feed_pages.rb)
+feed_pages:
+  per_page: 20
+  sponsor_position: 3
+  filters:
+    - { key: video, label: YouTube, icon: youtube }
+    - { key: podcast, label: Podcast, icon: podcast }
+    - { key: clip, label: Clips, icon: tiktok }
+    - { key: instagram, label: Instagram, icon: instagram }
+    - { key: post, label: Bluesky, icon: bluesky }
+
+defaults:
+  - scope: { path: "", type: pages }
+    values: { layout: page }
+  - scope: { path: "_pages" }
+    values: { layout: page }
+  # `type` drives the feed filters; `source` picks the avatar and name shown
+  # (see _data/sources.yml); `categories` group items in the RSS.
+  - scope: { path: "", type: posts }
+    values: { layout: entry, type: post, type_label: Update, source: updates, categories: [update] }
+  # Imported text is never Liquid, so a stray "{{" in a caption can't break the build
+  - scope: { path: "", type: podcasts }
+    values: { layout: entry, type: podcast, type_label: Podcast, source: podcast, categories: [podcast, wild-ones], render_with_liquid: false }
+  - scope: { path: "", type: videos }
+    values: { layout: entry, type: video, type_label: YouTube, source: youtube, categories: [video, youtube], render_with_liquid: false }
+  - scope: { path: "", type: tiktoks }
+    values: { layout: entry, type: clip, type_label: TikTok, source: tiktok, categories: [clip, tiktok], render_with_liquid: false }
+  - scope: { path: "", type: instagram }
+    values: { layout: entry, type: instagram, type_label: Instagram, source: instagram, categories: [instagram], render_with_liquid: false }
+
+include: [_pages, .well-known]
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - _config.preview.yml
+  - README.md
+  - _python
+  - requirements.txt
+  - vendor
+  - .venv
+  - .claude
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+feed:
+  posts_limit: 20
+
+sass:
+  style: compressed

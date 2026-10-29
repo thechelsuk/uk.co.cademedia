@@ -1,0 +1,12 @@
+---
+title: The Wild Ones Podcast
+permalink: /wild-ones-podcast/
+kicker: Weekly podcast
+intro: Bike tech, industry news and views, and the everyday realities of life on two wheels — honest conversation and community-driven discussion, every week.
+---
+{%- assign episodes = site.podcasts | reverse -%}
+<p>
+  <a class="btn" href="{{ site.sources.podcast_link }}" rel="noopener" target="_blank">{% include icon.html name="podcast" %} Listen everywhere</a>
+  <a class="btn btn--ghost" href="{{ site.sources.podcast_feed }}">{% include icon.html name="rss" %} Podcast RSS</a>
+</p>
+<ul class="episode-list full">{% for e in episodes %}{% include episode-row.html item=e %}{% endfor %}</ul>

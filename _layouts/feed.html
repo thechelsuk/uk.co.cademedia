@@ -1,0 +1,19 @@
+---
+layout: default
+body_class: feed
+---
+<section class="page-hero page-hero--compact">
+  <div class="wrap">
+    <p class="kicker">Everything CADE</p>
+    <h1>{% if page.filter == "all" %}The Feed{% else %}{% for f in site.feed_pages.filters %}{% if f.key == page.filter %}{{ f.label }}{% endif %}{% endfor %}{% endif %}</h1>
+  </div>
+</section>
+<div class="wrap with-sidebar">
+  <div class="with-sidebar-main">
+    <div class="timeline">
+      {%- for it in page.items %}{% if it.collection == 'sponsors' %}{% include sponsor-card.html item=it %}{% else %}{% include feed-card.html item=it %}{% endif %}{% else %}<p class="empty">Nothing here yet.</p>{% endfor %}
+    </div>
+    {% include pager.html pager=page.pager %}
+  </div>
+  {% include feed-sidebar.html %}
+</div>

@@ -1,0 +1,37 @@
+# Who each feed item is "from" — the avatar, name and handle in the timeline.
+youtube:
+  name: CADE Media
+  handle: "@Cade_Media"
+  icon: youtube
+  url: https://www.youtube.com/@Cade_Media
+  action: Watch on YouTube
+youtube-clips:
+  name: Cade Media Clips
+  handle: YouTube
+  icon: youtube
+  url: https://www.youtube.com/channel/UCgwWEwDzyhBQXNkjClZ23DA
+  action: Watch on YouTube
+podcast:
+  name: The Wild Ones
+  handle: Podcast
+  icon: podcast
+  url: https://podfollow.com/the-wild-ones
+  action: Listen everywhere
+tiktok:
+  name: CADE on TikTok
+  handle: "@cade_media"
+  icon: tiktok
+  url: https://www.tiktok.com/@cade_media
+  action: Watch on TikTok
+instagram:
+  name: CADE on Instagram
+  handle: "@cademediaofficial"
+  icon: instagram
+  url: https://www.instagram.com/cademediaofficial/
+  action: View on Instagram
+updates:
+  name: CADE Media
+  handle: Bluesky
+  icon: bluesky
+  url: /feed/post/
+  action: View original

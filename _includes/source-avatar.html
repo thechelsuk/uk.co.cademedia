@@ -1,0 +1,2 @@
+{%- assign src = site.data.sources[include.source] | default: site.data.sources.updates -%}
+<span class="avatar src--{{ include.source }}{% if include.variant %} avatar--{{ include.variant }}{% endif %}" aria-hidden="true">{% include icon.html name=src.icon %}</span>

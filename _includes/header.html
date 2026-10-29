@@ -1,0 +1,20 @@
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="{{ '/' | relative_url }}" aria-label="{{ site.title }} home">
+      <img src="{{ site.logo | relative_url }}" alt="CADE" width="1619" height="478">
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">{% include icon.html name="menu" %}</button>
+    <nav id="site-nav" class="site-nav" aria-label="Main">
+      <ul>
+        {%- for item in site.data.nav %}
+        {%- assign is_current = false %}
+        {%- if item.url == page.url %}{% assign is_current = true %}{% endif %}
+        {%- assign url_start = page.url | slice: 0, item.url.size %}
+        {%- if item.url != '/' and url_start == item.url %}{% assign is_current = true %}{% endif %}
+        <li><a href="{% if item.external %}{{ item.url }}{% else %}{{ item.url | relative_url }}{% endif %}"{% if is_current %} aria-current="page"{% endif %}{% if item.external %} rel="noopener" target="_blank"{% endif %}>{{ item.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {% include theme-toggle.html %}
+  </div>
+</header>

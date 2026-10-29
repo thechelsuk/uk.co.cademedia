@@ -1,0 +1,66 @@
+name: Deploy Pages
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+    # Daily rebuild so sponsored posts start and stop on their dates
+    schedule:
+        - cron: "7 0 * * *"
+    workflow_call:
+        inputs:
+            ref:
+                required: false
+                default: ""
+                type: string
+
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+env:
+    # true while the site is previewed on github.io (noindex, github.io links).
+    # Set to false when www.cademedia.co.uk points here.
+    PREVIEW: "true"
+
+# Let a running deploy finish; the newest waiting run still goes out.
+concurrency:
+    group: pages
+    cancel-in-progress: false
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+              with:
+                  ref: ${{ inputs.ref || github.ref }}
+
+            - name: Setup Pages
+              id: pages
+              uses: actions/configure-pages@v6
+
+            - name: Build
+              uses: ./.github/actions/jekyll-build
+              with:
+                  base-path: ${{ steps.pages.outputs.base_path }}
+                  config: ${{ env.PREVIEW == 'true' && '_config.yml,_config.preview.yml' || '_config.yml' }}
+
+            - name: Upload artifact
+              uses: actions/upload-pages-artifact@v5
+              with:
+                  path: _site
+                  include-hidden-files: true
+
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v5

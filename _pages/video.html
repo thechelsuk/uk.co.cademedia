@@ -1,0 +1,15 @@
+---
+title: Video
+permalink: /video/
+kicker: YouTube
+intro: Reviews, first looks, rides and the occasional rant. New videos every week on YouTube.
+---
+{%- assign main = site.videos | where: "channel", "main" | reverse -%}
+{%- assign long = main | where: "short", false -%}
+{%- assign shorts = main | where: "short", true -%}
+<p><a class="btn" href="https://www.youtube.com/@{{ site.sources.youtube_handle }}?sub_confirmation=1" rel="noopener" target="_blank">{% include icon.html name="youtube" %} Subscribe on YouTube</a></p>
+<div class="grid full">{% for v in long %}{% include card-video.html item=v %}{% endfor %}</div>
+{% if shorts.size > 0 %}
+<h2>Shorts</h2>
+<div class="grid grid--tall full">{% for t in shorts %}{% include card-tiktok.html item=t icon="youtube" %}{% endfor %}</div>
+{% endif %}

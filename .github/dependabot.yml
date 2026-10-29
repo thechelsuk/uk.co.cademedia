@@ -1,0 +1,24 @@
+---
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/_python"
+    assignees:
+      - thechelsuk
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "github-actions"
+    # Workflows plus the shared composite actions
+    directories:
+      - "/"
+      - "/.github/actions/*"
+    assignees:
+      - thechelsuk
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "bundler"
+    directory: "/"
+    assignees:
+      - thechelsuk
+    schedule:
+      interval: "daily"

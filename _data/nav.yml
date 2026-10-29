@@ -1,0 +1,17 @@
+# Video and Clips live as feed filters (and in the footer), so they're not here.
+- title: Home
+  url: /
+- title: Feed
+  url: /feed/
+- title: Podcast
+  url: /wild-ones-podcast/
+- title: Cool Wall
+  url: /cool-wall/
+- title: Contact
+  url: /contact-us/
+- title: Patreon
+  url: https://www.patreon.com/cademedia
+  external: true
+- title: Merch
+  url: https://cade-media-shop.fourthwall.com/en-gbp
+  external: true

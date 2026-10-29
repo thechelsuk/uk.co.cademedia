@@ -1,0 +1,5 @@
+# Preview on GitHub Pages (github.io) before the domain switches over.
+# The deploy workflow adds this file while PREVIEW is true; at go-live set
+# PREVIEW to false in .github/workflows/deploy-pages.yml.
+url: "https://thechelsuk.github.io"
+preview: true

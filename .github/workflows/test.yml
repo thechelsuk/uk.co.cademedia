@@ -1,0 +1,27 @@
+name: Test
+
+on:
+    pull_request:
+    push:
+        branches: [main]
+        paths: ["_python/**", "_plugins/**", "Gemfile*"]
+
+permissions:
+    contents: read
+
+jobs:
+    pytest:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+            - name: Set up Python and dependencies
+              uses: ./.github/actions/python-setup
+            - name: Importer tests
+              run: python -m pytest _python/test -q
+
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+            - name: Build site
+              uses: ./.github/actions/jekyll-build

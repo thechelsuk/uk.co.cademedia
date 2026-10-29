@@ -1,0 +1,69 @@
+name: Fetch Feeds
+
+# PESOS: pulls new YouTube videos, podcast episodes, TikToks and Instagram
+# posts into the site's collections, commits them, then redeploys.
+on:
+    # Every 30 minutes, offset from the hour (:13 and :43)
+    schedule:
+        - cron: "13,43 * * * *"
+    workflow_dispatch:
+
+permissions:
+    contents: write
+    pages: write
+    id-token: write
+
+concurrency:
+    group: fetch-feeds
+    cancel-in-progress: false
+
+jobs:
+    fetch:
+        runs-on: ubuntu-latest
+        outputs:
+            changed: ${{ steps.commit.outputs.changed }}
+            ref: ${{ steps.commit.outputs.ref }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+
+            - name: Set up Python and dependencies
+              uses: ./.github/actions/python-setup
+
+            # Each importer is independent: one failing source should not
+            # stop the others.
+            - name: YouTube
+              run: python _python/fetch_youtube.py || echo "::warning::YouTube import failed"
+
+            - name: Podcast
+              run: python _python/fetch_podcast.py || echo "::warning::Podcast import failed"
+
+            # TikTok rate-limits cloud runners, so check a short window
+            - name: TikTok
+              run: python _python/fetch_tiktok.py --limit 10 || echo "::warning::TikTok import failed"
+
+            - name: Updates (RSS)
+              run: python _python/fetch_updates.py || echo "::warning::Updates import failed"
+
+            - name: Instagram
+              env:
+                  INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+              run: python _python/fetch_instagram.py || echo "::warning::Instagram import failed"
+
+            - name: Commit and push
+              id: commit
+              uses: ./.github/actions/commit-and-push
+              with:
+                  message: "Chore: PESOS feed update"
+                  paths: "_videos _podcasts _tiktoks _instagram _posts assets/images/tiktok assets/images/instagram"
+
+    deploy:
+        needs: fetch
+        if: needs.fetch.outputs.changed == 'true'
+        uses: ./.github/workflows/deploy-pages.yml
+        with:
+            ref: ${{ needs.fetch.outputs.ref }}
+        permissions:
+            contents: read
+            pages: write
+            id-token: write

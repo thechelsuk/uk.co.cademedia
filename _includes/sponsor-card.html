@@ -1,0 +1,25 @@
+{%- assign sp = include.item -%}
+<article class="post-item post-item--sponsor" data-type="sponsor" aria-label="Sponsored by {{ sp.sponsor }}">
+  {%- if sp.logo %}
+  <img class="avatar avatar--logo" src="{{ sp.logo | relative_url }}" alt="" width="48" height="48" loading="lazy">
+  {%- else %}
+  <span class="avatar src--sponsor" aria-hidden="true">{{ sp.sponsor | slice: 0 }}</span>
+  {%- endif %}
+  <div class="post-main">
+    <header class="post-head">
+      <strong>{{ sp.sponsor }}</strong>
+      <span class="post-handle">Sponsored</span>
+    </header>
+    {% if sp.title %}<h3 class="post-title"><a href="{{ sp.link }}" rel="sponsored noopener" target="_blank">{{ sp.title }}</a></h3>{% endif %}
+    <div class="post-text post-text--note">{{ sp.content | markdownify }}</div>
+    {%- if sp.image %}
+    <a class="post-media" href="{{ sp.link }}" rel="sponsored noopener" target="_blank" tabindex="-1" aria-hidden="true">
+      <img src="{% if sp.image contains '://' %}{{ sp.image }}{% else %}{{ sp.image | relative_url }}{% endif %}" alt="" loading="lazy">
+    </a>
+    {%- endif %}
+    <footer class="post-actions">
+      <span class="badge badge--sponsor">Sponsored</span>
+      <a class="btn btn--sm post-cta" href="{{ sp.link }}" rel="sponsored noopener" target="_blank">{{ sp.cta | default: 'Find out more' }} {% include icon.html name="arrow" %}</a>
+    </footer>
+  </div>
+</article>

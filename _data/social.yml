@@ -1,0 +1,16 @@
+# icon = id of a <symbol> in _includes/icons.svg
+- name: YouTube
+  icon: youtube
+  url: https://www.youtube.com/@Cade_Media
+- name: Podcast
+  icon: podcast
+  url: https://podfollow.com/the-wild-ones
+- name: Instagram
+  icon: instagram
+  url: https://www.instagram.com/cademediaofficial/
+- name: TikTok
+  icon: tiktok
+  url: https://www.tiktok.com/@cade_media
+- name: Patreon
+  icon: patreon
+  url: https://www.patreon.com/cademedia

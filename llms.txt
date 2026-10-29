@@ -1,0 +1,38 @@
+---
+layout: null
+permalink: /llms.txt
+sitemap: false
+---
+# CADE Media
+
+> {{ site.description | strip }} CADE makes cycling videos on YouTube, The Wild Ones weekly cycling podcast, short clips on TikTok and YouTube, and posts on Instagram and Bluesky. Based in the UK.
+
+CADE's team: {% for m in site.data.team %}{{ m.name }} ({{ m.role }}){% unless forloop.last %}, {% endunless %}{% endfor %}.
+
+## Main pages
+
+- [The Feed]({{ '/feed/' | absolute_url }}): every video, podcast episode, clip and update in one timeline, newest first
+- [The Wild Ones Podcast]({{ '/wild-ones-podcast/' | absolute_url }}): the weekly podcast on bike tech, industry news and life on two wheels
+- [Video]({{ '/video/' | absolute_url }}): YouTube reviews, first looks and rides
+- [Clips]({{ '/cade-clips/' | absolute_url }}): short clips from the podcast and channel
+- [The Cool Wall]({{ '/cool-wall/' | absolute_url }}): CADE's (unscientific) ranking of the bike tech they review
+- [Contact]({{ '/contact-us/' | absolute_url }}): podcast questions, commercial and PR enquiries
+
+## Latest videos
+{% assign videos = site.videos | where: "channel", "main" | reverse %}
+{% for v in videos limit: 10 %}- [{{ v.title }}]({{ v.url | absolute_url }}): {{ v.seo_description }}
+{% endfor %}
+## Latest podcast episodes
+{% assign eps = site.podcasts | reverse %}
+{% for e in eps limit: 10 %}- [{{ e.title }}]({{ e.url | absolute_url }}): {{ e.seo_description }}
+{% endfor %}
+## Feeds
+
+- [Everything (RSS)]({{ '/feed/all.xml' | absolute_url }})
+- [Podcast (RSS)]({{ site.sources.podcast_feed }})
+- [Sitemap]({{ '/sitemap.xml' | absolute_url }})
+
+## Elsewhere
+
+{% for s in site.data.social %}- [{{ s.name }}]({{ s.url }})
+{% endfor %}- [We Are The Wild Ones (merch)](https://wearethewildones.com/)

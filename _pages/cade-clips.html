@@ -1,0 +1,20 @@
+---
+title: CADE Clips
+permalink: /cade-clips/
+kicker: Clips
+intro: The best bits from the podcast and the channel, cut down for when you've only got five minutes.
+---
+{%- assign yt = site.videos | where: "channel", "clips" | reverse -%}
+{%- assign tt = site.tiktoks | reverse -%}
+<p>
+  <a class="btn" href="https://www.youtube.com/channel/UCgwWEwDzyhBQXNkjClZ23DA" rel="noopener" target="_blank">{% include icon.html name="youtube" %} Clips on YouTube</a>
+  <a class="btn btn--ghost" href="https://www.tiktok.com/@{{ site.sources.tiktok_user }}" rel="noopener" target="_blank">{% include icon.html name="tiktok" %} TikTok</a>
+</p>
+{% if yt.size > 0 %}
+<h2>From the podcast</h2>
+<div class="grid full">{% for v in yt %}{% include card-video.html item=v %}{% endfor %}</div>
+{% endif %}
+{% if tt.size > 0 %}
+<h2>On TikTok</h2>
+<div class="grid grid--tall full">{% for t in tt %}{% include card-tiktok.html item=t %}{% endfor %}</div>
+{% endif %}

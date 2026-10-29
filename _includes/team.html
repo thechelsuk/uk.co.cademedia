@@ -1,0 +1,8 @@
+<div class="team">
+  {%- for m in site.data.team %}
+  <figure>
+    <img src="{{ m.photo | relative_url }}" alt="{{ m.name }}" loading="lazy" width="600" height="600">
+    <figcaption><strong>{{ m.name }}</strong><span>{{ m.role }}</span></figcaption>
+  </figure>
+  {%- endfor %}
+</div>

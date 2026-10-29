@@ -1,0 +1,36 @@
+name: Jekyll Build
+description: Set up Ruby with cached gems and build the site into _site.
+inputs:
+    base-path:
+        description: Base path for the site (from actions/configure-pages).
+        required: false
+        default: ""
+    config:
+        description: Jekyll config files, comma separated.
+        required: false
+        default: "_config.yml"
+    ruby-version:
+        description: Ruby version to install.
+        required: false
+        default: "3.3.11"
+
+runs:
+    using: composite
+    steps:
+        - name: Set up Ruby
+          uses: ruby/setup-ruby@v1
+          with:
+              config:
+        description: Jekyll config files, comma separated.
+        required: false
+        default: "_config.yml"
+    ruby-version: ${{ inputs.ruby-version }}
+              bundler-cache: true
+
+        - name: Build site
+          shell: bash
+          env:
+              JEKYLL_ENV: production
+              BASE_PATH: ${{ inputs.base-path }}
+              CONFIG: ${{ inputs.config }}
+          run: bundle exec jekyll build --config "$CONFIG" --baseurl "$BASE_PATH"

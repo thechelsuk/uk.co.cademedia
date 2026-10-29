@@ -1,0 +1,87 @@
+---
+layout: default
+body_class: home
+title: CADE Media
+seo_title: CADE Media — Cycling culture for real people
+description: CADE is one of the fastest growing cycling channels on YouTube — reviews, rides, the weekly Wild Ones podcast and more.
+---
+{%- assign videos = site.videos | reverse -%}
+{%- assign episodes = site.podcasts | reverse -%}
+{%- assign tiktoks = site.tiktoks | reverse -%}
+{%- assign insta = site.instagram | reverse -%}
+<section class="hero">
+  <div class="wrap">
+    <img class="hero-logo" src="{{ site.logo | relative_url }}" alt="CADE" width="1619" height="478">
+    <h1>Cycling culture for real people.</h1>
+    <p class="lede">News, reviews and entertainment from one of the fastest growing cycling channels on YouTube.</p>
+    <div class="hero-actions">
+      <a class="btn btn--light" href="https://www.youtube.com/@Cade_Media?sub_confirmation=1" rel="noopener" target="_blank">{% include icon.html name="youtube" %} Subscribe</a>
+      <a class="btn btn--ghost" href="{{ '/wild-ones-podcast/' | relative_url }}">{% include icon.html name="podcast" %} The Wild Ones Podcast</a>
+    </div>
+    <ul class="hero-stats">
+      <li><strong>100M+</strong><span>views and counting</span></li>
+      <li><strong>Weekly</strong><span>Wild Ones Podcast</span></li>
+      <li><strong>5</strong><span>humans &amp; one dog</span></li>
+    </ul>
+  </div>
+</section>
+
+<div class="strip" aria-hidden="true">
+  <div class="strip-track">
+    {%- for img in site.data.gallery %}<img src="{{ img | relative_url }}" alt="" loading="lazy">{% endfor -%}
+    {%- for img in site.data.gallery %}<img src="{{ img | relative_url }}" alt="" loading="lazy">{% endfor -%}
+  </div>
+</div>
+
+<section class="section">
+  <div class="wrap intro-grid">
+    <h2>We aim to entertain, inform, and inspire in everything that we do.</h2>
+    <div>
+      <p>We've built a loyal community of viewers who trust us as a friendly and reliable source for cycling news, reviews and entertainment. We've already generated over 100 million views – and counting – through a unique blend of relatable and compelling digital storytelling.</p>
+      <p>Our weekly Wild Ones Podcast covers bike tech, industry news and views, and the everyday realities of life on two wheels, with a focus on honest conversation and community-driven discussions.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--ink">
+  <div class="wrap">
+    <div class="section-head"><h2>Latest videos</h2><a class="more" href="{{ '/video/' | relative_url }}">All videos {% include icon.html name="arrow" %}</a></div>
+    {% if videos.size > 0 %}
+    <div class="grid">{% for v in videos limit:6 %}{% include card-video.html item=v %}{% endfor %}</div>
+    {% else %}<p class="empty">Videos appear here once the YouTube importer has run.</p>{% endif %}
+  </div>
+</section>
+
+<section class="section section--blush">
+  <div class="wrap">
+    <div class="section-head"><h2>The Wild Ones Podcast</h2><a class="more" href="{{ '/wild-ones-podcast/' | relative_url }}">All episodes {% include icon.html name="arrow" %}</a></div>
+    {% if episodes.size > 0 %}
+    <ul class="episode-list">{% for e in episodes limit:4 %}{% include episode-row.html item=e %}{% endfor %}</ul>
+    {% else %}<p class="empty">Episodes appear here once the podcast importer has run.</p>{% endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><h2>Clips</h2><a class="more" href="{{ '/cade-clips/' | relative_url }}">All clips {% include icon.html name="arrow" %}</a></div>
+    {% if tiktoks.size > 0 %}
+    <div class="grid grid--tall">{% for t in tiktoks limit:5 %}{% include card-tiktok.html item=t %}{% endfor %}</div>
+    {% else %}<p class="empty">TikTok clips appear here once the TikTok importer has run.</p>{% endif %}
+  </div>
+</section>
+
+{% if insta.size > 0 %}
+<section class="section section--blush">
+  <div class="wrap">
+    <div class="section-head"><h2>On Instagram</h2><a class="more" href="https://www.instagram.com/{{ site.sources.instagram_user }}/" rel="noopener" target="_blank">@{{ site.sources.instagram_user }} {% include icon.html name="arrow" %}</a></div>
+    <div class="grid grid--square">{% for p in insta limit:8 %}{% include card-instagram.html item=p %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><h2>Meet the team</h2></div>
+    {% include team.html %}
+  </div>
+</section>

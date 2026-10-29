@@ -1,0 +1,5 @@
+<ul class="social{% if include.class %} {{ include.class }}{% endif %}">
+  {%- for s in site.data.social %}
+  <li><a href="{{ s.url }}" rel="noopener" target="_blank" aria-label="CADE on {{ s.name }}" title="{{ s.name }}">{% include icon.html name=s.icon %}</a></li>
+  {%- endfor %}
+</ul>

@@ -1,0 +1,51 @@
+<footer class="site-footer">
+  <div class="footer-art">
+    <div class="wrap footer-art-inner">
+      {%- for img in site.data.footer_images %}
+      <figure class="footer-art-item"><img src="{{ img.src | relative_url }}" alt="{{ img.alt | default: '' }}" loading="lazy"></figure>
+      {%- endfor %}
+    </div>
+  </div>
+  <div class="footer-bar">
+    <div class="wrap footer-grid">
+      <div class="footer-about">
+        <a class="footer-brand" href="{{ '/' | relative_url }}"><img src="{{ site.logo | relative_url }}" alt="CADE" width="1619" height="478" loading="lazy"></a>
+        <p>{{ site.tagline }}.</p>
+        {% include social-links.html class="social--footer" %}
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <h2>Watch &amp; listen</h2>
+        <ul>
+          <li><a href="{{ '/feed/' | relative_url }}">The Feed</a></li>
+          <li><a href="{{ '/video/' | relative_url }}">Video</a></li>
+          <li><a href="{{ '/wild-ones-podcast/' | relative_url }}">The Wild Ones Podcast</a></li>
+          <li><a href="{{ '/cade-clips/' | relative_url }}">Clips</a></li>
+          <li><a href="{{ '/cool-wall/' | relative_url }}">Cool Wall</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-links" aria-label="More">
+        <h2>More</h2>
+        <ul>
+          <li><a href="{{ '/contact-us/' | relative_url }}">Contact</a></li>
+          <li><a href="https://www.patreon.com/cademedia" rel="noopener" target="_blank">Patreon</a></li>
+          <li><a href="https://cade-media-shop.fourthwall.com/en-gbp" rel="noopener" target="_blank">Merch</a></li>
+          <li><a href="https://wearethewildones.com/" rel="noopener" target="_blank">We Are The Wild Ones</a></li>
+          <li><a href="{{ '/feed/all.xml' | relative_url }}">RSS</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="wrap footer-legal">
+      <p>&copy; {{ site.time | date: '%Y' }} CADE Media</p>
+      <nav aria-label="Legal">
+        <a href="{{ '/privacy/' | relative_url }}">Privacy</a>
+        <a href="{{ '/terms/' | relative_url }}">Terms</a>
+        <a href="{{ '/security/' | relative_url }}">Security</a>
+      </nav>
+      <p class="footer-credit">
+        Site by <a href="https://thechels.uk" rel="noopener" target="_blank">thechelsuk</a>
+        <span aria-hidden="true">·</span>
+        Build {% if site.build.url %}<a href="{{ site.build.url }}" rel="noopener" target="_blank"><code>{{ site.build.sha }}</code></a>{% else %}<code>{{ site.build.sha }}</code>{% endif %}
+      </p>
+    </div>
+  </div>
+</footer>
