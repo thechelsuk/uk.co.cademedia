@@ -20,11 +20,7 @@ runs:
         - name: Set up Ruby
           uses: ruby/setup-ruby@v1
           with:
-              config:
-        description: Jekyll config files, comma separated.
-        required: false
-        default: "_config.yml"
-    ruby-version: ${{ inputs.ruby-version }}
+              ruby-version: ${{ inputs.ruby-version }}
               bundler-cache: true
 
         - name: Build site
