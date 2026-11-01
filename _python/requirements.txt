@@ -3,6 +3,6 @@ pyyaml>=6.0.3
 requests>=2.34.2
 bleach>=6.4.0
 markdownify>=1.2.3
-yt-dlp>=2026.10.21
+yt-dlp>=2026.10.26
 pytest>=9.1.1
 pillow>=11.0.0
