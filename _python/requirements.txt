@@ -5,4 +5,4 @@ bleach>=6.4.0
 markdownify>=1.2.3
 yt-dlp>=2026.10.21
 pytest>=9.1.1
-pillow>=11.0.0
+pillow>=13.0.0
