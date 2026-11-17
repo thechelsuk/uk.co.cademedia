@@ -1,0 +1,94 @@
+name: Link Checker
+
+# Builds the site, runs lychee over it, and keeps one open "broken-links"
+# issue: opened or updated when links are broken, closed once a run finds none.
+on:
+    schedule:
+        - cron: "17 6 * * 1"
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    issues: write
+
+env:
+    SITE_HOST: www.cademedia.co.uk
+    ROOT: ${{ github.workspace }}/_site
+
+jobs:
+    linkChecker:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+
+            - name: Build
+              uses: ./.github/actions/jekyll-build
+
+            # GitHub Pages serves /page from page.html, then page.xml. lychee
+            # only adds .html, so link each file at its extensionless path.
+            - name: Serve pages as GitHub Pages does
+              run: |
+                  find "$ROOT" -type f \( -name '*.html' -o -name '*.xml' \) -print0 | sort -z |
+                    while IFS= read -r -d '' f; do b="${f%.*}"; [ -e "$b" ] || ln "$f" "$b"; done
+
+            # 403, 405 and 429 count as alive: many sites block or rate-limit bots.
+            # webmention.io and web.brid.gy refuse plain requests, so are skipped.
+            - name: Link Checker
+              id: lychee
+              uses: lycheeverse/lychee-action@v2.9.0
+              with:
+                  args: >-
+                      --no-progress
+                      --root-dir "${{ env.ROOT }}"
+                      --remap '^https?://${{ env.SITE_HOST }}(/.*)? file://${{ env.ROOT }}$1'
+                      --exclude '^mailto:'
+                      --exclude 'webmention\.io/'
+                      --exclude 'web\.brid\.gy/'
+                      --exclude 'google\.com/maps'
+                      --accept 100..=103,200..=299,403,405,429
+                      --timeout 20
+                      --max-retries 3
+                      './_site/**/*.html'
+                  # Report, don't fail: a failed step would skip the issue steps below.
+                  fail: false
+                  format: markdown
+                  output: ./lychee/out.md
+                  jobSummary: true
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            # An issue body holds at most 65,536 characters.
+            - name: Fit the report in an issue
+              if: steps.lychee.outputs.exit_code != 0
+              run: |
+                  if [ "$(wc -c < lychee/out.md)" -gt 60000 ]; then
+                    head -c 58000 lychee/out.md > lychee/short.md
+                    printf '\n\n…\n\nThe list is cut short here. Every broken link is in [the run'"'"'s summary](%s/%s/actions/runs/%s).\n' \
+                      "${{ github.server_url }}" "${{ github.repository }}" "${{ github.run_id }}" >> lychee/short.md
+                    mv lychee/short.md lychee/out.md
+                  fi
+
+            - name: Find the open report
+              id: existing
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  number=$(gh issue list --repo "${{ github.repository }}" --label broken-links --state open --json number --jq '.[0].number // empty')
+                  echo "number=$number" >> "$GITHUB_OUTPUT"
+
+            - name: Open or update the report
+              if: steps.lychee.outputs.exit_code != 0
+              uses: peter-evans/create-issue-from-file@v6
+              with:
+                  title: Broken links
+                  content-filepath: ./lychee/out.md
+                  issue-number: ${{ steps.existing.outputs.number }}
+                  labels: broken-links
+                  assignees: thechelsuk
+
+            - name: Close the report once the links are fixed
+              if: steps.lychee.outputs.exit_code == 0 && steps.existing.outputs.number != ''
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: gh issue close "${{ steps.existing.outputs.number }}" --repo "${{ github.repository }}" --comment "No broken links in run ${{ github.run_id }}."
