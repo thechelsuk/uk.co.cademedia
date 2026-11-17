@@ -1,0 +1,14 @@
+---
+layout: null
+permalink: /.well-known/privacy.txt
+sitemap: false
+---
+# Privacy
+Effective: {{ site.legal.updated | date: '%Y-%m-%d' }}
+Site: {{ site.url }}/
+Policy: {{ '/privacy/' | absolute_url }}
+
+This site has no accounts, analytics or advertising cookies.
+We do not collect or sell your personal data.
+
+Questions: {{ site.legal.email }}
