@@ -73,7 +73,9 @@ def escape_markdown(line: str) -> str:
     out, last = [], 0
     for m in URL.finditer(line):
         out.append(MD_SPECIAL.sub(r"\\\1", line[last:m.start()]))
-        out.append(f"<{m.group(0)}>")
+        # A doubled scheme ("https://https://site/", a typo in some descriptions) links to the site itself.
+        url = re.sub(r"^https?://(?=https?://)", "", m.group(0))
+        out.append(f"<{url}>")
         last = m.end()
     out.append(MD_SPECIAL.sub(r"\\\1", line[last:]))
     text = "".join(out)

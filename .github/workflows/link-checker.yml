@@ -46,6 +46,7 @@ jobs:
                       --exclude 'webmention\.io/'
                       --exclude 'web\.brid\.gy/'
                       --exclude 'google\.com/maps'
+                      --exclude 'forms\.gle/'
                       --accept 100..=103,200..=299,403,405,429
                       --timeout 20
                       --max-retries 3

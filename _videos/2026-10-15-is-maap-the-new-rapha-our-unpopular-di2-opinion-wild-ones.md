@@ -52,7 +52,7 @@ Our address: CADE, PO Box 790, Durham, DH1 9TH, UK
 (Unfortunately we can't guarantee anything you send will be featured, and are unable to return anything you send us)  
 
 SUPPORT CADE directly:  
-WILD Merch: <https://https://wearethewildones.com/>  
+WILD Merch: <https://wearethewildones.com/>  
 Patreon: <https://www.patreon.com/cademedia>  
 
 Get in touch: <https://www.cademedia.co.uk/contact-us>  

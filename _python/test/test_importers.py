@@ -305,3 +305,17 @@ class TestUpdates:
     def test_no_feeds_configured_is_a_no_op(self, monkeypatch):
         monkeypatch.setattr(fetch_updates.pesos, "load_sources", lambda: {})
         assert fetch_updates.run() == 0
+
+
+class TestDoubledScheme:
+    """A description that doubles the scheme ("https://https://site/") still links to the site."""
+
+    def test_doubled_https_collapses(self):
+        assert pesos.escape_markdown("Merch: https://https://wearethewildones.com/") == \
+            "Merch: <https://wearethewildones.com/>"
+
+    def test_mixed_doubled_scheme_collapses(self):
+        assert pesos.escape_markdown("http://https://example.com/x") == "<https://example.com/x>"
+
+    def test_normal_link_unchanged(self):
+        assert pesos.escape_markdown("See https://example.com/") == "See <https://example.com/>"
