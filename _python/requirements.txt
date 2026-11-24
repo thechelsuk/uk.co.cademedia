@@ -1,5 +1,5 @@
 feedparser>=6.0.14
-pyyaml>=6.0.3
+pyyaml>=6.0.4
 requests>=2.34.2
 bleach>=6.4.0
 markdownify>=1.2.4
